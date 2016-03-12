@@ -2,10 +2,12 @@
 
 namespace Encount\Error;
 
+use Cake\Core\App;
 use Cake\Error\ErrorHandler;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\Configure;
 
+use InvalidArgumentException;
 use Exception;
 
 class EncountErrorHandler extends ErrorHandler
@@ -14,7 +16,7 @@ class EncountErrorHandler extends ErrorHandler
 
     protected $_defaultConfig = [
         'force' => false,
-        'sender' => ['\Encount\Sender\Mail'],
+        'sender' => ['Encount.Mail'],
         'mail' => [
             'prefix' => '',
             'html' => true
@@ -93,8 +95,25 @@ class EncountErrorHandler extends ErrorHandler
             return ;
         }
 
-        foreach ($config['sender'] as $sender) {
-            (new $sender())->send($config, $code, $errorType, $description, $file, $line, $context);
+        foreach ($config['sender'] as $senderName) {
+            $sender  = $this->generateSender($senderName);
+            $sender->send($config, $code, $errorType, $description, $file, $line, $context);
         }
+    }
+
+    /**
+     * generate Encount Sender
+     *
+     * @access private
+     * @author sakuragawa
+     */
+    private function generateSender($name)
+    {
+        $class = App::className($name, 'Sender');
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException(sprintf('Encount sender "%s" was not found.', $class));
+        }
+
+        return new $class();
     }
 }
