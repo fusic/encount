@@ -27,11 +27,12 @@ class EncountErrorHandler extends ErrorHandler
     {
         parent::__construct($options);
 
-        $EncountConfig = [];
+        $encountConfig = [];
         if (isset($options['encount'])) {
-            $EncountConfig = $options['encount'];
+            $encountConfig = $options['encount'];
         }
-        $this->config($EncountConfig);
+
+        $this->config($encountConfig, null, false);
     }
 
     /**
