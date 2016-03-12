@@ -72,9 +72,6 @@ class EncountErrorHandler extends ErrorHandler
      */
     public function handleFatalError($code, $description, $file, $line)
     {
-        $errorCode = EncountErrorHandler::mapErrorCode($code);
-        $errorStr = $errorCode[0];
-
         $this->execute($code, 'FatalError', $description, $file, $line);
 
         return parent::handleFatalError($code, $description, $file, $line);
