@@ -18,9 +18,9 @@ composer require fusic/encount
 // config/bootstrap.php
 <?php
 
-use Encount\Error\ErrorHandler;
+use Encount\Error\EncountErrorHandler;
 
-(new ErrorHandler(Configure::read('Error')))->register();
+(new EncountErrorHandler(Configure::read('Error')))->register();
 ```
 
 ## Config
