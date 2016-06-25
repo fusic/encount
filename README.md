@@ -56,6 +56,23 @@ return [
 
 -snip-
 
+    'Email' => [
+        'default' => [
+            'transport' => 'default',
+            'from' => 'you@localhost',
+            //'charset' => 'utf-8',
+            //'headerCharset' => 'utf-8',
+        ],
+        // Encount Email config
+        'error' => [
+            'transport' => 'default',
+            'from' => 'from@example.com',
+            'to' => 'to@example.com'
+        ]
+    ],
+
+-snip-
+
 ];
 ```
 
