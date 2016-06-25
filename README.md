@@ -18,9 +18,13 @@ composer require fusic/encount
 // config/bootstrap.php
 <?php
 
+// web
 use Encount\Error\EncountErrorHandler;
-
 (new EncountErrorHandler(Configure::read('Error')))->register();
+
+// shell
+use Encount\Console\EncountConsoleErrorHandler;
+(new EncountConsoleErrorHandler(Configure::read('Error')))->register();
 ```
 
 ## Config
@@ -39,7 +43,7 @@ return [
         'skipLog' => [],
         'log' => true,
         'trace' => true,
-        # Encount config
+        // Encount config
         'encount' => [
             'force' => false,
             'sender' => ['Encount.Mail'],
