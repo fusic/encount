@@ -10,6 +10,8 @@ use Cake\Core\Configure;
 use InvalidArgumentException;
 use Exception;
 
+use Encount\Utility\EncountCollector;
+
 class EncountErrorHandler extends ErrorHandler
 {
     use InstanceConfigTrait;
@@ -92,6 +94,8 @@ class EncountErrorHandler extends ErrorHandler
         if ($config['force'] === false && $debug > 0) {
             return ;
         }
+
+        EncountCollector::collectNow();
 
         foreach ($config['sender'] as $senderName) {
             $sender  = $this->generateSender($senderName);
