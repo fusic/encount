@@ -8,6 +8,8 @@ use Cake\Error\Debugger;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
+use Encount\Utility\EncountCollector;
+
 class Mail implements SenderInterface
 {
     /**
@@ -44,7 +46,7 @@ class Mail implements SenderInterface
         $prefix = $config['mail']['prefix'];
         $date = Time::now()->format('Ymd H:i:s');
 
-        $subject = $prefix . '['. $date . '][' . strtoupper($errorType) . '][' . $this->url() . '] ' . $description;
+        $subject = $prefix . '['. $date . '][' . strtoupper($errorType) . '][' . EncountCollector::$url . '] ' . $description;
         return $subject;
     }
 
@@ -70,9 +72,9 @@ class Mail implements SenderInterface
      * @author sakuragawa
      */
     private function getText($message, $file, $line, $context = null){
-        $params = Router::getRequest();
-        $trace = Debugger::trace(array('start' => 2, 'format' => 'base'));
-        $session = isset($_SESSION) ? $_SESSION : array();
+        $params = EncountCollector::$requestParams;
+        $trace = EncountCollector::$trace;
+        $session = EncountCollector::$session;
         $msg = array(
             $message,
             $file . '(' . $line . ')',
@@ -87,9 +89,9 @@ class Mail implements SenderInterface
             'Request:',
             '-------------------------------',
             '',
-            '* URL       : ' . $this->url(),
-            '* Client IP : ' . $this->getClientIp(),
-            '* Referer   : ' . env('HTTP_REFERER'),
+            '* URL       : ' . EncountCollector::$url,
+            '* Client IP : ' . EncountCollector::$ip,
+            '* Referer   : ' . EncountCollector::$referer,
             '* Parameters: ' . trim(print_r($params, true)),
             '* Cake root : ' . APP,
             '',
@@ -97,19 +99,19 @@ class Mail implements SenderInterface
             'Environment:',
             '-------------------------------',
             '',
-            trim(print_r($_SERVER, true)),
+            trim(print_r(EncountCollector::$environment, true)),
             '',
             '-------------------------------',
             'Session:',
             '-------------------------------',
             '',
-            trim(print_r($session, true)),
+            trim(print_r(EncountCollector::$session, true)),
             '',
             '-------------------------------',
             'Cookie:',
             '-------------------------------',
             '',
-            trim(print_r($_COOKIE, true)),
+            trim(print_r(EncountCollector::$cookie, true)),
             '',
             '-------------------------------',
             'Context:',
@@ -128,9 +130,9 @@ class Mail implements SenderInterface
      * @author sakuragawa
      */
     private function getHtml($message, $file, $line, $context = null){
-        $params = Router::getRequest();
-        $trace = Debugger::trace(array('start' => 2, 'format' => 'base'));
-        $session = isset($_SESSION) ? $_SESSION : array();
+        $params = EncountCollector::$requestParams;
+        $trace = EncountCollector::$trace;
+        $session = EncountCollector::$session;
         $msg = array(
             '<p><strong>',
             $message,
@@ -152,11 +154,11 @@ class Mail implements SenderInterface
             '</h2>',
             '',
             '<h3>URL</h3>',
-            $this->url(),
+            EncountCollector::$url,
             '<h3>Client IP</h3>',
-            $this->getClientIp(),
+            EncountCollector::$ip,
             '<h3>Referer</h3>',
-            env('HTTP_REFERER'),
+            EncountCollector::$referer,
             '<h3>Parameters</h3>',
             self::dumper($params),
             '<h3>Cake root</h3>',
@@ -166,19 +168,19 @@ class Mail implements SenderInterface
             'Environment:',
             '</h2>',
             '',
-            self::dumper($_SERVER),
+            self::dumper(EncountCollector::$environment),
             '',
             '<h2>',
             'Session:',
             '</h2>',
             '',
-            self::dumper($session),
+            self::dumper(EncountCollector::$session),
             '',
             '<h2>',
             'Cookie:',
             '</h2>',
             '',
-            self::dumper($_COOKIE),
+            self::dumper(EncountCollector::$cookie),
             '',
             '<h2>',
             'Context:',
@@ -208,50 +210,5 @@ class Mail implements SenderInterface
         $ret = ob_get_contents();
         ob_end_clean();
         return $ret;
-    }
-
-    /**
-     * get the url
-     *
-     * @access private
-     * @author sakuragawa
-     */
-    private function url() {
-        if (PHP_SAPI == 'cli') {
-            return 'cli';
-        }
-        $protocol = array_key_exists('HTTPS', $_SERVER) ? 'https' : 'http';
-        return $protocol . '://' . env('HTTP_HOST') . env('REQUEST_URI');
-    }
-
-    /**
-     * get the client IP
-     *
-     * @access private
-     * @author sakuragawa
-     */
-    private function getClientIp(){
-        //$safe = Configure::read('ExceptionNotifier.clientIpSafe');
-        $safe = true;
-        if (!$safe && env('HTTP_X_FORWARDED_FOR')) {
-            $env = 'HTTP_X_FORWARDED_FOR';
-            $ipaddr = preg_replace('/(?:,.*)/', '', env('HTTP_X_FORWARDED_FOR'));
-        } else {
-            if (env('HTTP_CLIENT_IP')) {
-                $env = 'HTTP_CLIENT_IP';
-                $ipaddr = env('HTTP_CLIENT_IP');
-            } else {
-                $env = 'REMOTE_ADDR';
-                $ipaddr = env('REMOTE_ADDR');
-            }
-        }
-        if (env('HTTP_CLIENTADDRESS')) {
-            $tmpipaddr = env('HTTP_CLIENTADDRESS');
-            if (!empty($tmpipaddr)) {
-                $env = 'HTTP_CLIENTADDRESS';
-                $ipaddr = preg_replace('/(?:,.*)/', '', $tmpipaddr);
-            }
-        }
-        return trim($ipaddr) . ' [' . $env . ']';
     }
 }
