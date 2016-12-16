@@ -7,6 +7,10 @@ use Cake\Error\ErrorHandler;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\Configure;
 
+use Cake\Error\Debugger;
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\HtmlDumper;
+
 use InvalidArgumentException;
 use Exception;
 

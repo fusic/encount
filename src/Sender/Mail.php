@@ -71,7 +71,8 @@ class Mail implements SenderInterface
      */
     private function getText($message, $file, $line, $context = null){
         $params = Router::getRequest();
-        $trace = Debugger::trace(array('start' => 2, 'format' => 'base'));
+        // $trace = Debugger::trace(array('start' => 2, 'format' => 'base'));
+        $trace = Debugger::trace(array('format' => 'base'));
         $session = isset($_SESSION) ? $_SESSION : array();
         $msg = array(
             $message,
@@ -129,7 +130,8 @@ class Mail implements SenderInterface
      */
     private function getHtml($message, $file, $line, $context = null){
         $params = Router::getRequest();
-        $trace = Debugger::trace(array('start' => 2, 'format' => 'base'));
+        //$trace = Debugger::trace(array('start' => 2, 'format' => 'base'));
+        $trace = Debugger::trace(array('format' => 'base'));
         $session = isset($_SESSION) ? $_SESSION : array();
         $msg = array(
             '<p><strong>',
