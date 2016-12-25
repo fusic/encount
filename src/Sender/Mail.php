@@ -7,6 +7,7 @@ use Cake\Routing\Router;
 use Cake\Error\Debugger;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
+use Encount\Collector\EncountCollector;
 
 class Mail implements SenderInterface
 {
@@ -16,7 +17,7 @@ class Mail implements SenderInterface
      * @access public
      * @author sakuragawa
      */
-    public function send($config, $collector)
+    public function send($config,EncountCollector $collector)
     {
         $subject = $this->subject($config, $collector);
         $body = $this->body($config, $collector);
