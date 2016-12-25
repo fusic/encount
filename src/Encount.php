@@ -10,6 +10,7 @@ use Encount\Collector\EncountCollector;
 class Encount
 {
     use InstanceConfigTrait;
+
     protected $_defaultConfig = [
         'force' => false,
         'sender' => ['Encount.Mail'],
@@ -35,12 +36,12 @@ class Encount
     {
         $debug = Configure::read('debug');
 
-        $collector = new EncountCollector($code, $errorType, $description, $file, $line, $context);
-        $collector->build();
-
         if ($this->_config['force'] === false && $debug > 0) {
             return ;
         }
+
+        $collector = new EncountCollector($code, $errorType, $description, $file, $line, $context);
+        $collector->build();
 
         foreach ($this->_config['sender'] as $senderName) {
             $sender  = $this->generateSender($senderName);

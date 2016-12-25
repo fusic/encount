@@ -18,14 +18,12 @@ class EncountCollector
     public $environment;
     public $cookie;
 
-    public $baseError = [
-        'code' => '',
-        'errorType' => '',
-        'description' => '',
-        'file' => '',
-        'line' => '',
-        'context' => ''
-    ];
+    public $code;
+    public $errorType;
+    public $description;
+    public $file;
+    public $line;
+    public $context;
 
     public function __construct($code, $description, $file, $line, $context)
     {
@@ -42,14 +40,12 @@ class EncountCollector
             $errorType = $errorCode[0];
         }
 
-        $this->baseError = [
-            'code' => $code,
-            'errorType' => $errorType,
-            'description' => $description,
-            'file' => $file,
-            'line' => $line,
-            'context' => $context
-        ];
+        $this->code = $code;
+        $this->errorType = $errorType;
+        $this->description = $description;
+        $this->file = $file;
+        $this->line = $line;
+        $this->context = $context;
     }
 
     /**

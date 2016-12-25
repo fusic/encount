@@ -9,10 +9,9 @@ class EncountErrorHandlerMiddleware extends ErrorHandlerMiddleware
 {
     public function handleException($exception, $request, $response)
     {
-        $encount = new Encount($exception);
-        $exceptionName = get_class($exception);
-
+        $encount = new Encount();
         $encount->execute($exception);
+
         return parent::handleException($exception, $request, $response);
     }
 }
