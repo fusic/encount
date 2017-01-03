@@ -35,9 +35,11 @@ class EncountCollector
             $description = $exception->getMessage();
             $file = $exception->getFile();
             $line = $exception->getLine();
+            $trace = Debugger::formatTrace($exception, ['format' => 'base']);
         } else {
             $errorCode = BaseErrorHandler::mapErrorCode($code);
             $errorType = $errorCode[0];
+            $trace = Debugger::trace(['format' => 'base']);
         }
 
         $this->code = $code;
@@ -46,6 +48,7 @@ class EncountCollector
         $this->file = $file;
         $this->line = $line;
         $this->context = $context;
+        $this->trace = $trace;
     }
 
     /**
@@ -59,7 +62,6 @@ class EncountCollector
         $this->ip = $this->ip();
         $this->referer = env('HTTP_REFERER');
         $this->requestParams = Router::getRequest()->params;
-        $this->trace = Debugger::trace([/*'start' => 2, */'format' => 'base']);
         $this->session = isset($_SESSION) ? $_SESSION : array();
         $this->environment = $_SERVER;
         $this->cookie = $_COOKIE;

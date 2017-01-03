@@ -17,7 +17,7 @@ class Mail implements SenderInterface
      * @access public
      * @author sakuragawa
      */
-    public function send($config,EncountCollector $collector)
+    public function send($config, EncountCollector $collector)
     {
         $subject = $this->subject($config, $collector);
         $body = $this->body($config, $collector);
