@@ -39,7 +39,7 @@ class EncountCollector
         } else {
             $errorCode = BaseErrorHandler::mapErrorCode($code);
             $errorType = $errorCode[0];
-            $trace = Debugger::trace(['format' => 'base']);
+            $trace = Debugger::trace(['format' => 'base', 'start' => 3]);
         }
 
         $this->code = $code;
