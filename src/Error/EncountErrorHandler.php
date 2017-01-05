@@ -15,11 +15,8 @@ class EncountErrorHandler extends ErrorHandler
      */
     public function handleError($code, $description, $file = null, $line = null, $context = null)
     {
-        $errorCode = EncountErrorHandler::mapErrorCode($code);
-        $errorType = $errorCode[0];
-
         $encount = new Encount();
-        $encount->execute($code, $errorType, $description, $file, $line, $context);
+        $encount->execute($code, $description, $file, $line, $context);
 
         return parent::handleError($code, $description, $file, $line, $context);
     }

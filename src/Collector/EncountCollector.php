@@ -58,6 +58,11 @@ class EncountCollector
      */
     public function build()
     {
+        $isCli = PHP_SAPI === 'cli';
+        if ($isCli) {
+            return ;
+        }
+
         $this->url = $this->url();
         $this->ip = $this->ip();
         $this->referer = env('HTTP_REFERER');
