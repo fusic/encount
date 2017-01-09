@@ -40,8 +40,8 @@ class Encount
             return ;
         }
 
-        $collector = new EncountCollector($code, $errorType, $description, $file, $line, $context);
-        $collector->build();
+        $collector = new EncountCollector();
+        $collector->build($code, $errorType, $description, $file, $line, $context);
 
         foreach ($this->_config['sender'] as $senderName) {
             $sender  = $this->generateSender($senderName);

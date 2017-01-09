@@ -25,8 +25,14 @@ class EncountCollector
     public $line;
     public $context;
 
-    public function __construct($code, $description, $file, $line, $context)
+    /**
+     * build
+     *
+     * @access public
+     */
+    public function build($code, $description, $file, $line, $context)
     {
+
         if ($code instanceof Exception) {
             $exception = $code;
 
@@ -41,7 +47,6 @@ class EncountCollector
             $errorType = $errorCode[0];
             $trace = Debugger::trace(['format' => 'base', 'start' => 3]);
         }
-
         $this->code = $code;
         $this->errorType = $errorType;
         $this->description = $description;
@@ -49,15 +54,7 @@ class EncountCollector
         $this->line = $line;
         $this->context = $context;
         $this->trace = $trace;
-    }
 
-    /**
-     * build
-     *
-     * @access public
-     */
-    public function build()
-    {
         $isCli = PHP_SAPI === 'cli';
         if ($isCli) {
             return ;

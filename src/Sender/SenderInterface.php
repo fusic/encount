@@ -5,5 +5,5 @@ use Encount\Collector\EncountCollector;
 
 interface SenderInterface
 {
-    public function send($config,EncountCollector $collector);
+    public function send($config, EncountCollector $collector);
 }
