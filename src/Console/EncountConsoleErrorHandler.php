@@ -3,6 +3,7 @@ namespace Encount\Console;
 
 use Cake\Console\ConsoleErrorHandler;
 use Encount\Encount;
+use Exception;
 
 class EncountConsoleErrorHandler extends ConsoleErrorHandler
 {
