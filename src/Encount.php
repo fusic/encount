@@ -32,7 +32,7 @@ class Encount
         $this->config($encountConfig, null, false);
     }
 
-    public function execute($code, $errorType = null, $description = null, $file = null, $line = null, $context = null)
+    public function execute($code, $description = null, $file = null, $line = null, $context = null)
     {
         $debug = Configure::read('debug');
 
@@ -41,7 +41,7 @@ class Encount
         }
 
         $collector = new EncountCollector();
-        $collector->build($code, $errorType, $description, $file, $line, $context);
+        $collector->build($code, $description, $file, $line, $context);
 
         foreach ($this->_config['sender'] as $senderName) {
             $sender  = $this->generateSender($senderName);
