@@ -4,6 +4,7 @@ namespace Encount\Error;
 
 use Cake\Error\ErrorHandler;
 use Encount\Encount;
+use Exception;
 
 class EncountErrorHandler extends ErrorHandler
 {
