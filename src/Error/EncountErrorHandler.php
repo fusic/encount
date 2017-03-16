@@ -4,6 +4,7 @@ namespace Encount\Error;
 
 use Cake\Error\ErrorHandler;
 use Encount\Encount;
+use Exception;
 
 class EncountErrorHandler extends ErrorHandler
 {
@@ -27,7 +28,7 @@ class EncountErrorHandler extends ErrorHandler
      * @access public
      * @author sakuragawa
      */
-    public function handleException(\Exception $exception)
+    public function handleException(Exception $exception)
     {
         $encount = new Encount();
         $encount->execute($exception);
