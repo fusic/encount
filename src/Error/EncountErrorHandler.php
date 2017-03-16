@@ -27,7 +27,7 @@ class EncountErrorHandler extends ErrorHandler
      * @access public
      * @author sakuragawa
      */
-    public function handleException(Exception $exception)
+    public function handleException(\Exception $exception)
     {
         $encount = new Encount();
         $encount->execute($exception);
