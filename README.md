@@ -27,6 +27,18 @@ use Encount\Console\EncountConsoleErrorHandler;
 (new EncountConsoleErrorHandler(Configure::read('Error')))->register();
 ```
 
+```php
+// 3.4.0 or higher
+// src/Application.php
+<?php
+
+use Encount\Middleware\EncountErrorHandlerMiddleware;
+
+$middleware
+    //->add(new ErrorHandlerMiddleware(Configure::read('Error.exceptionRenderer')))
+    ->add(new EncountErrorHandlerMiddleware(Configure::read('Error.exceptionRenderer')))
+```
+
 ## Config
 
 ```php
@@ -79,3 +91,4 @@ return [
 ## Sender
 
 ### Encount.Mail
+### [Encount sender for faultline](https://github.com/fusic/encount-sender-faultline)
