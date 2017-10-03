@@ -6,6 +6,7 @@ use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Encount\Collector\EncountCollector;
+use Exception;
 
 class Encount
 {
@@ -14,6 +15,10 @@ class Encount
     protected $_defaultConfig = [
         'force' => false,
         'sender' => ['Encount.Mail'],
+        'deny' => [
+            'error' => [],
+            'exception' => []
+        ],
         'mail' => [
             'prefix' => '',
             'html' => true
@@ -36,7 +41,11 @@ class Encount
     {
         $debug = Configure::read('debug');
 
-        if ($this->_config['force'] === false && $debug > 0) {
+        if ($this->_config['force'] === false && $debug == true) {
+            return;
+        }
+
+        if ($this->deny($code)) {
             return ;
         }
 
@@ -44,9 +53,30 @@ class Encount
         $collector->build($code, $description, $file, $line, $context);
 
         foreach ($this->_config['sender'] as $senderName) {
-            $sender  = $this->generateSender($senderName);
+            $sender = $this->generateSender($senderName);
             $sender->send($this->_config, $collector);
         }
+    }
+
+    private function deny($check)
+    {
+        $denyList = $this->config('deny');
+
+        if ($check instanceof Exception) {
+            foreach ($denyList['exception'] as $ex) {
+                if (is_a($check, $ex)) {
+                    return true;
+                }
+            }
+        } else {
+            foreach ($denyList['error'] as $e) {
+                if ($check == $e) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
