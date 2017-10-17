@@ -63,15 +63,19 @@ class Encount
         $denyList = $this->config('deny');
 
         if ($check instanceof Exception) {
-            foreach ($denyList['exception'] as $ex) {
-                if (is_a($check, $ex)) {
-                    return true;
+            if (isset($denyList['exception'])) {
+                foreach ($denyList['exception'] as $ex) {
+                    if (is_a($check, $ex)) {
+                        return true;
+                    }
                 }
             }
         } else {
-            foreach ($denyList['error'] as $e) {
-                if ($check == $e) {
-                    return true;
+            if (isset($denyList['error'])) {
+                foreach ($denyList['error'] as $e) {
+                    if ($check == $e) {
+                        return true;
+                    }
                 }
             }
         }
