@@ -29,8 +29,8 @@ class Mail implements SenderInterface
 
         $email = new Email('error');
         $email
-            ->emailFormat($format)
-            ->subject($subject)
+            ->setEmailFormat($format)
+            ->setSubject($subject)
             ->send($body);
     }
 
