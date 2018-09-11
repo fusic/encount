@@ -90,9 +90,8 @@ class EncountCollector
      * @access public
      * @author sakuragawa
      */
-    public function ip()
+    public function ip($safe=true)
     {
-        $safe = true;
         if (!$safe && env('HTTP_X_FORWARDED_FOR')) {
             $env = 'HTTP_X_FORWARDED_FOR';
             $ipaddr = preg_replace('/(?:,.*)/', '', env('HTTP_X_FORWARDED_FOR'));
