@@ -34,14 +34,14 @@ class Encount
             $encountConfig = $config;
         }
 
-        $this->config($encountConfig, null, false);
+        $this->setConfig($encountConfig, null, false);
     }
 
     public function execute($code, $description = null, $file = null, $line = null, $context = null)
     {
         $debug = Configure::read('debug');
 
-        if ($this->_config['force'] === false && $debug == true) {
+        if ($this->getConfig('force') === false && $debug == true) {
             return;
         }
 
@@ -52,15 +52,15 @@ class Encount
         $collector = new EncountCollector();
         $collector->build($code, $description, $file, $line, $context);
 
-        foreach ($this->_config['sender'] as $senderName) {
+        foreach ($this->getConfig('sender') as $senderName) {
             $sender = $this->generateSender($senderName);
-            $sender->send($this->_config, $collector);
+            $sender->send($this->getConfig(), $collector);
         }
     }
 
     private function deny($check)
     {
-        $denyList = $this->config('deny');
+        $denyList = $this->getConfig('deny');
 
         if ($check instanceof Exception) {
             if (isset($denyList['exception'])) {
