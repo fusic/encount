@@ -67,11 +67,10 @@ class EncountCollector
         $this->environment = $_SERVER;
         $this->cookie = $_COOKIE;
 
+        $this->requestParams = [];
         $request = Router::getRequest();
         if (!is_null($request)) {
             $this->requestParams = $request->getAttributes();
-        } else {
-            $this->requestParams = null;
         }
     }
 
