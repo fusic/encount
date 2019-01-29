@@ -63,10 +63,15 @@ class EncountCollector
         $this->url = $this->url();
         $this->ip = $this->ip();
         $this->referer = env('HTTP_REFERER');
-        $this->requestParams = Router::getRequest()->getAttributes();
         $this->session = isset($_SESSION) ? $_SESSION : array();
         $this->environment = $_SERVER;
         $this->cookie = $_COOKIE;
+
+        $this->requestParams = [];
+        $request = Router::getRequest();
+        if (!is_null($request)) {
+            $this->requestParams = $request->getAttributes();
+        }
     }
 
     /**
