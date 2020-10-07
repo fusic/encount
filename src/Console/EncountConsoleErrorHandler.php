@@ -1,9 +1,9 @@
 <?php
 namespace Encount\Console;
 
-use Cake\Console\ConsoleErrorHandler;
+use Cake\Error\ConsoleErrorHandler;
 use Encount\Encount;
-use Exception;
+use Throwable;
 
 class EncountConsoleErrorHandler extends ConsoleErrorHandler
 {
@@ -13,7 +13,7 @@ class EncountConsoleErrorHandler extends ConsoleErrorHandler
      * @access public
      * @author sakuragawa
      */
-    public function handleError($code, $description, $file = null, $line = null, $context = null)
+    public function handleError(int $code, string $description, ?string $file = null, ?int $line = null, ?array $context = null): bool
     {
         $encount = new Encount();
         $encount->execute($code, $description, $file, $line, $context);
@@ -27,7 +27,7 @@ class EncountConsoleErrorHandler extends ConsoleErrorHandler
      * @access public
      * @author sakuragawa
      */
-    public function handleException(Exception $exception)
+    public function handleException(Throwable $exception): void
     {
         $encount = new Encount();
         $encount->execute($exception);
@@ -41,7 +41,7 @@ class EncountConsoleErrorHandler extends ConsoleErrorHandler
      * @access public
      * @author sakuragawa
      */
-    public function handleFatalError($code, $description, $file, $line)
+    public function handleFatalError(int $code, string $description, string $file, int $line): bool
     {
         $encount = new Encount();
         $encount->execute($code, 'FatalError', $description, $file, $line);
