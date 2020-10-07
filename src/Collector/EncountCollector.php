@@ -5,7 +5,6 @@ namespace Encount\Collector;
 use Cake\Routing\Router;
 use Cake\Error\Debugger;
 use Cake\Error\BaseErrorHandler;
-use Error;
 use Throwable;
 
 class EncountCollector
