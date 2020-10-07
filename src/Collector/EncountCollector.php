@@ -6,7 +6,7 @@ use Cake\Routing\Router;
 use Cake\Error\Debugger;
 use Cake\Error\BaseErrorHandler;
 use Error;
-use Exception;
+use Throwable;
 
 class EncountCollector
 {
@@ -34,7 +34,7 @@ class EncountCollector
     public function build($code, $description, $file, $line, $context)
     {
 
-        if ($code instanceof Exception || $code instanceof Error) {
+        if ($code instanceof Throwable) {
             $exception = $code;
 
             $code = $exception->getCode();
