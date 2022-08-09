@@ -1,6 +1,9 @@
 {
     "name": "fusic/encount",
     "description": "Encount plugin for CakePHP",
+    "license": [
+        "MIT"
+    ],
     "type": "cakephp-plugin",
     "require": {
         "php": ">=7.2",
