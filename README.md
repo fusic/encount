@@ -1,6 +1,9 @@
-# Encount plugin for CakePHP
+# Encount plugin for CakePHP5.x.
 
-[![Code Quality](http://img.shields.io/scrutinizer/g/fusic/encount.svg?style=flat-square)](https://scrutinizer-ci.com/g/fusic/encount/)
+## Requirements
+
+- PHP >= 8.1.*
+- CakePHP >= 5.*
 
 ## Installation
 
@@ -18,25 +21,27 @@ composer require fusic/encount
 // config/bootstrap.php
 <?php
 
-// web
-use Encount\Error\EncountErrorHandler;
-(new EncountErrorHandler(Configure::read('Error')))->register();
+use Encount\Error\EncountErrorTrap;
+use Encount\Error\EncountExceptionTrap;
 
-// shell
-use Encount\Console\EncountConsoleErrorHandler;
-(new EncountConsoleErrorHandler(Configure::read('Error')))->register();
+/*
+ * Register application error and exception handlers.
+ */
+// (new ErrorTrap(Configure::read('Error')))->register();
+// (new ExceptionTrap(Configure::read('Error')))->register();
+(new EncountErrorTrap(Configure::read('Error')))->register();
+(new EncountExceptionTrap(Configure::read('Error')))->register();
 ```
 
 ```php
-// 3.4.0 or higher
 // src/Application.php
 <?php
 
 use Encount\Middleware\EncountErrorHandlerMiddleware;
 
 $middleware
-    //->add(new ErrorHandlerMiddleware(Configure::read('Error.exceptionRenderer')))
-    ->add(new EncountErrorHandlerMiddleware(Configure::read('Error.exceptionRenderer')))
+    // ->add(new ErrorHandlerMiddleware(Configure::read('Error'), $this))
+    ->add(new EncountErrorHandlerMiddleware(Configure::read('Error'), $this))
 ```
 
 ## Config
@@ -51,36 +56,56 @@ return [
 
     'Error' => [
         'errorLevel' => E_ALL & ~E_DEPRECATED,
-        'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => true,
         'trace' => true,
-        // Encount config
         'encount' => [
             'force' => false,
-            'sender' => ['Encount.Mail'],
-            'mail' => [
-                'prefix' => '',
-                'html' => true
-            ]
+            'sender' => [
+                'Encount.Mail',
+            ],
+            // ignore ex)
+            // 'deny' => [
+            //     'exception' => [
+            //         '\Cake\Http\Exception\MissingControllerException', // 404
+            //         '\Cake\Http\Exception\MethodNotAllowedException', // 404
+            //         '\Cake\Http\Exception\ForbiddenException', // isAuthorized
+            //         '\Cake\Controller\Exception\MissingActionException', // 404
+            //         '\Cake\Datasource\Exception\RecordNotFoundException', // notFoundRecored
+            //     ],
+            // ],
         ],
     ],
 
 -snip-
 
+    'EmailTransport' => [
+        'default' => [
+        ],
+        // Encount Email config
+        'encount' => [
+            'className' => SmtpTransport::class,
+            'port' => xxx,
+            'timeout' => xx,
+            'host' => 'xxxxxxxxxxxxxxxxx',
+            'username' => 'xxxxxxxx@example.com',
+            'password' => 'xxxxxxxx',
+            'log' => true,
+            'tls' => true,
+        ],
+    ],
+
     'Email' => [
         'default' => [
-            'transport' => 'default',
-            'from' => 'you@localhost',
-            //'charset' => 'utf-8',
-            //'headerCharset' => 'utf-8',
         ],
         // Encount Email config
         'error' => [
-            'transport' => 'default',
+            'transport' => 'encount',
             'from' => 'from@example.com',
-            'to' => 'to@example.com'
-        ]
+            'to' => 'to@example.com',
+            'charset' => 'utf-8',
+            'headerCharset' => 'utf-8',
+        ],
     ],
 
 -snip-
