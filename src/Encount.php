@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Encount;
 
@@ -7,24 +8,33 @@ use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Encount\Collector\EncountCollector;
 use Exception;
+use InvalidArgumentException;
 
 class Encount
 {
     use InstanceConfigTrait;
 
-    protected $_defaultConfig = [
+    /**
+     * @var array
+     */
+    protected array $_defaultConfig = [
         'force' => false,
         'sender' => ['Encount.Mail'],
         'deny' => [
             'error' => [],
-            'exception' => []
+            'exception' => [],
         ],
         'mail' => [
             'prefix' => '',
-            'html' => true
-        ]
+            'html' => true,
+        ],
     ];
 
+    /**
+     * __construct
+     *
+     * @return void
+     */
     public function __construct()
     {
         $config = Configure::read('Error.encount');
@@ -37,7 +47,16 @@ class Encount
         $this->setConfig($encountConfig, null, false);
     }
 
-    public function execute($code, $description = null, $file = null, $line = null, $context = null)
+    /**
+     * @param mixed $code
+     * @param mixed $description
+     * @param mixed $file
+     * @param mixed $line
+     * @param mixed $context
+     * @return void
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     */
+    public function execute($code, $description = null, $file = null, $line = null, $context = null): void
     {
         $debug = Configure::read('debug');
 
@@ -46,7 +65,7 @@ class Encount
         }
 
         if ($this->deny($code)) {
-            return ;
+            return;
         }
 
         $collector = new EncountCollector();
@@ -58,7 +77,12 @@ class Encount
         }
     }
 
-    private function deny($check)
+    /**
+     * @param mixed $check
+     * @return bool
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     */
+    private function deny($check): bool
     {
         $denyList = $this->getConfig('deny');
 
@@ -84,12 +108,11 @@ class Encount
     }
 
     /**
-     * generate Encount Sender
-     *
-     * @access private
-     * @author sakuragawa
+     * @param string $name
+     * @return object
+     * @throws \InvalidArgumentException
      */
-    private function generateSender($name)
+    private function generateSender(string $name): object
     {
         $class = App::className($name, 'Sender');
         if (!class_exists($class)) {

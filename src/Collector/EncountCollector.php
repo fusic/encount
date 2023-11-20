@@ -1,14 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Encount\Collector;
 
-use Cake\Routing\Router;
 use Cake\Error\Debugger;
-use Cake\Error\BaseErrorHandler;
+use Cake\Error\PhpError;
+use Cake\Routing\Router;
 use Throwable;
 
 class EncountCollector
 {
+    // phpcs:disable SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingAnyTypeHint
     public $url;
     public $ip;
     public $referer;
@@ -24,15 +26,19 @@ class EncountCollector
     public $file;
     public $line;
     public $context;
+    // @phpcs:enable
 
     /**
-     * build
-     *
-     * @access public
+     * @param mixed $code
+     * @param mixed $description
+     * @param mixed $file
+     * @param mixed $line
+     * @param mixed $context
+     * @return void
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
-    public function build($code, $description, $file, $line, $context)
+    public function build($code, $description, $file, $line, $context): void
     {
-
         if ($code instanceof Throwable) {
             $exception = $code;
 
@@ -41,11 +47,10 @@ class EncountCollector
             $description = $exception->getMessage();
             $file = $exception->getFile();
             $line = $exception->getLine();
-            $trace = Debugger::formatTrace($exception, ['format' => 'base']);
+            $trace = Debugger::formatTrace($exception, ['format' => 'text']);
         } else {
-            $errorCode = BaseErrorHandler::mapErrorCode($code);
-            $errorType = $errorCode[0];
-            $trace = Debugger::trace(['format' => 'base', 'start' => 3]);
+            $errorType = (new PhpError($code, ''))->getLabel();
+            $trace = Debugger::trace(['format' => 'text', 'start' => 3]);
         }
         $this->code = $code;
         $this->errorType = $errorType;
@@ -57,13 +62,13 @@ class EncountCollector
 
         $isCli = PHP_SAPI === 'cli';
         if ($isCli) {
-            return ;
+            return;
         }
 
         $this->url = $this->url();
         $this->ip = $this->ip();
         $this->referer = env('HTTP_REFERER');
-        $this->session = isset($_SESSION) ? $_SESSION : array();
+        $this->session = $_SESSION ?? [];
         $this->environment = $_SERVER;
         $this->cookie = $_COOKIE;
 
@@ -75,27 +80,23 @@ class EncountCollector
     }
 
     /**
-     * get the url
-     *
-     * @access public
-     * @author sakuragawa
+     * @return mixed
      */
-    public function url()
+    public function url(): string
     {
         if (PHP_SAPI == 'cli') {
             return 'cli';
         }
         $protocol = array_key_exists('HTTPS', $_SERVER) ? 'https' : 'http';
+
         return $protocol . '://' . env('HTTP_HOST') . env('REQUEST_URI');
     }
 
     /**
-     * get the client IP
-     *
-     * @access public
-     * @author sakuragawa
+     * @param bool $safe
+     * @return string
      */
-    public function ip($safe=true)
+    public function ip(bool $safe = true): string
     {
         if (!$safe && env('HTTP_X_FORWARDED_FOR')) {
             $env = 'HTTP_X_FORWARDED_FOR';
@@ -116,16 +117,15 @@ class EncountCollector
                 $ipaddr = preg_replace('/(?:,.*)/', '', $tmpipaddr);
             }
         }
+
         return trim($ipaddr) . ' [' . $env . ']';
     }
 
     /**
-     * Returns an array
-     *
-     * @access public
-     * @author sakuragawa
+     * @return array<string, mixed>
      */
-    public function __debugInfo() {
+    public function __debugInfo(): array
+    {
         return [
             'url' => $this->url,
             'ip' => $this->ip,
@@ -134,7 +134,7 @@ class EncountCollector
             'trace' => $this->trace,
             'session' => $this->session,
             'environment' => $this->environment,
-            'cookie' => $this->cookie
+            'cookie' => $this->cookie,
         ];
     }
 }

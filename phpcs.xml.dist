@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="Reincarnation">
+  <rule ref="CakePHP">
+    <exclude name="Generic.Files.LineLength.TooLong" />
+  </rule>
+</ruleset>
