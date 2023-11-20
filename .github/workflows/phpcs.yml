@@ -1,0 +1,38 @@
+name: phpcs
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP 8.1
+        run: sudo update-alternatives --set php /usr/bin/php8.1
+
+      - name: php check
+        run: php -v
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: composer install
+        run: composer install --prefer-dist --no-progress
+
+      - name: phpunit
+        run: composer phpcs
